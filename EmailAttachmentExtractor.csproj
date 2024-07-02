@@ -21,4 +21,11 @@
       <Folder Include="Services\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Icons\Folder-Flat.png" />
+      <Resource Include="Icons\Folder-Flat.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
+
 </Project>

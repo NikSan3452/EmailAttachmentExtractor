@@ -9,27 +9,27 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Page Update="Views\MainWindow.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
+        <Page Update="Views\MainWindow.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Icons\" />
-      <Folder Include="Services\" />
+        <Folder Include="Icons\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Icons\Folder-Flat.png" />
-      <Resource Include="Icons\Folder-Flat.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
+        <None Remove="Icons\Folder-Flat.png"/>
+        <Resource Include="Icons\Folder-Flat.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Resource>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MimeKit" Version="4.7.0" />
+        <PackageReference Include="MimeKit" Version="4.7.0"/>
+        <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1"/>
     </ItemGroup>
 
 </Project>

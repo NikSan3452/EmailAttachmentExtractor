@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EmailAttachmentExtractor"
+        xmlns:vm="clr-namespace:EmailAttachmentExtractor.ViewModels"
+        d:DataContext="{d:DesignInstance vm:MainViewModel}"
         mc:Ignorable="d"
         Title="EmailAttachmentExtractor" Height="400" Width="450"
         WindowStartupLocation="CenterScreen">
@@ -16,19 +17,19 @@
             <Setter Property="Height" Value="40" />
             <Setter Property="BorderThickness" Value="0" />
         </Style>
-        
+
         <Style TargetType="TextBlock" x:Key="LabelTextBlockStyle">
             <Setter Property="Margin" Value="20, 0" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
-        
+
         <Style TargetType="TextBlock" x:Key="SelectedPathTextBlockStyle">
             <Setter Property="Margin" Value="20, 0" />
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="FontSize" Value="8"></Setter>
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="FontSize" Value="8" />
         </Style>
-        
+
         <Style TargetType="Image" x:Key="BrowseButtonImage">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
@@ -43,69 +44,72 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Row="0" 
-                       Grid.Column="0" 
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
                        Style="{StaticResource LabelTextBlockStyle}"
-                       Text="Выберите папку с электронной почтой"/>
-            <Button Grid.Row="0" 
-                    Grid.Column="1" 
+                       Text="Выберите папку с электронной почтой" />
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    Command="{Binding SelectEmailFolderCommand}"
                     Style="{StaticResource BrowseButtonStyle}">
                 <Image Source="/EmailAttachmentExtractor;component/Icons/Folder-Flat.png"
-                       Style="{StaticResource BrowseButtonImage}"/>  
+                       Style="{StaticResource BrowseButtonImage}" />
             </Button>
-            <TextBlock Grid.Row="1" 
-                       Grid.Column="0" 
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Style="{StaticResource SelectedPathTextBlockStyle}"
-                       Text=""/>
+                       Text="" />
         </Grid>
-            
+
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Row="0" 
-                       Grid.Column="0" 
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
                        Style="{StaticResource LabelTextBlockStyle}"
-                       Text="Выберите папку, в которую  сохранить вложения"/>
-            <Button Grid.Row="0" 
-                    Grid.Column="1" 
+                       Text="Выберите папку, в которую  сохранить вложения" />
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    Command="{Binding SelectAttachmentsFolderCommand}"
                     Style="{StaticResource BrowseButtonStyle}">
                 <Image Source="/EmailAttachmentExtractor;component/Icons/Folder-Flat.png"
-                       Style="{StaticResource BrowseButtonImage}"/>
+                       Style="{StaticResource BrowseButtonImage}" />
             </Button>
-            <TextBlock Grid.Row="1" 
-                       Grid.Column="0" 
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Style="{StaticResource SelectedPathTextBlockStyle}"
-                       Text=""/>
+                       Text="" />
         </Grid>
-        
+
         <ProgressBar Grid.Row="2" Margin="20" Height="10" />
-            
-            <Button Grid.Row="3" 
-                    Grid.Column="0" 
-                    HorizontalAlignment="Center"
-                    Height="50"
-                    Width="100"
-                    FontSize="20"
-                    Content="Старт"/>
+
+        <Button Grid.Row="3"
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                Height="50"
+                Width="100"
+                FontSize="20"
+                Content="Старт"
+                Command="{Binding StartCommand}" />
     </Grid>
 </Window>

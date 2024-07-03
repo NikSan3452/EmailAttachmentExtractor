@@ -28,4 +28,8 @@
       </Resource>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="MimeKit" Version="4.7.0" />
+    </ItemGroup>
+
 </Project>

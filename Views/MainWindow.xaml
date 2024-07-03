@@ -22,12 +22,13 @@
             <Setter Property="Margin" Value="20, 0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="FontSize" Value="14"></Setter>
         </Style>
 
         <Style TargetType="TextBlock" x:Key="SelectedPathTextBlockStyle">
             <Setter Property="Margin" Value="20, 0" />
             <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="FontSize" Value="8" />
+            <Setter Property="FontSize" Value="10" />
         </Style>
 
         <Style TargetType="Image" x:Key="BrowseButtonImage">
@@ -70,7 +71,7 @@
                        Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Style="{StaticResource SelectedPathTextBlockStyle}"
-                       Text="" />
+                       Text="{Binding EmailPath}" />
         </Grid>
 
         <Grid Grid.Row="1">
@@ -98,7 +99,7 @@
                        Grid.Column="0"
                        Grid.ColumnSpan="2"
                        Style="{StaticResource SelectedPathTextBlockStyle}"
-                       Text="" />
+                       Text="{Binding AttachmentsDirectory}" />
         </Grid>
 
         <ProgressBar Grid.Row="2" Margin="20" Height="10" />

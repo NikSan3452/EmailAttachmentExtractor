@@ -41,6 +41,7 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         
         <Grid Grid.Row="0">
@@ -68,7 +69,6 @@
                        Grid.ColumnSpan="2"
                        Style="{StaticResource SelectedPathTextBlockStyle}"
                        Text=""/>
-
         </Grid>
             
         <Grid Grid.Row="1">
@@ -97,8 +97,10 @@
                        Style="{StaticResource SelectedPathTextBlockStyle}"
                        Text=""/>
         </Grid>
+        
+        <ProgressBar Grid.Row="2" Margin="20" Height="10" />
             
-            <Button Grid.Row="2" 
+            <Button Grid.Row="3" 
                     Grid.Column="0" 
                     HorizontalAlignment="Center"
                     Height="50"

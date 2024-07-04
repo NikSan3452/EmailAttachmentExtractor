@@ -6,7 +6,10 @@
         xmlns:vm="clr-namespace:EmailAttachmentExtractor.ViewModels"
         d:DataContext="{d:DesignInstance vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="EmailAttachmentExtractor" Height="400" Width="470"
+        Title="EmailAttachmentExtractor" 
+        Height="400" 
+        Width="470"
+        ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="Button" x:Key="BrowseButtonStyle">

@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Markup;
 using EmailAttachmentExtractor.Commands;
 using EmailAttachmentExtractor.Services;
@@ -10,13 +9,17 @@ namespace EmailAttachmentExtractor.ViewModels;
 [MarkupExtensionReturnType(typeof(MainViewModel))]
 public class MainViewModel : ViewModel
 {
-    private readonly EmailAttachmentExtractService _extractService;
+    public readonly EmailAttachmentExtractService ExtractService;
 
     public MainViewModel()
     {
+        ExtractService = new EmailAttachmentExtractService();
+        ExtractService.ProgressChanged += OnProgressChanged;
+        ProgressValue = 0;
+        ProcessedFilesCount = 0;
+
         #region Commands
 
-        _extractService = new EmailAttachmentExtractService();
         StartCommand = new StartCommand(this);
         SelectEmailFolderCommand = new SelectEmailFolderCommand(this);
         SelectAttachmentsFolderCommand = new SelectAttachmentsFolderCommand(this);
@@ -24,27 +27,10 @@ public class MainViewModel : ViewModel
         #endregion
     }
 
-    public void SelectEmailPath()
+    private void OnProgressChanged(int processedFiles, int progress)
     {
-        EmailPath = _extractService.SelectEmailPath();
-    }
-
-    public void SelectAttachmentsFolder()
-    {
-        AttachmentsDirectory = _extractService.SelectAttachmentsFolder();
-    }
-
-    public void ExtractAttachments()
-    {
-        if (!string.IsNullOrEmpty(EmailPath) && !string.IsNullOrEmpty(AttachmentsDirectory))
-        {
-            _extractService.ExtractAttachments(EmailPath, AttachmentsDirectory);
-            MessageBox.Show("Вложения успешно извлечены.");
-        }
-        else
-        {
-            MessageBox.Show("Пожалуйста, выберите путь к файлу/папке .eml и папку для сохранения вложений.");
-        }
+        ProgressValue = progress;
+        ProcessedFilesCount = processedFiles;
     }
 
     #region Commands
@@ -71,6 +57,22 @@ public class MainViewModel : ViewModel
     {
         get => _attachmentsDirectory;
         set => Set(ref _attachmentsDirectory, value);
+    }
+
+    private int _progressValue;
+
+    public int ProgressValue
+    {
+        get => _progressValue;
+        set => Set(ref _progressValue, value);
+    }
+
+    private int _processedFilesCount;
+
+    public int ProcessedFilesCount
+    {
+        get => _processedFilesCount;
+        set => Set(ref _processedFilesCount, value);
     }
 
     #endregion

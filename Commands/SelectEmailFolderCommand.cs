@@ -12,6 +12,6 @@ public class SelectEmailFolderCommand(MainViewModel vm) : Command
 
     public override void Execute(object? parameter)
     {
-        vm.SelectEmailPath();
+        vm.EmailPath = vm.ExtractService.SelectEmailPath();
     }
 }

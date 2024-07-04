@@ -12,6 +12,6 @@ public class SelectAttachmentsFolderCommand(MainViewModel vm) : Command
 
     public override void Execute(object? parameter)
     {
-        vm.SelectAttachmentsFolder();
+        vm.AttachmentsDirectory = vm.ExtractService.SelectAttachmentsFolder();
     }
 }

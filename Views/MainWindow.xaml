@@ -22,7 +22,7 @@
             <Setter Property="Margin" Value="20, 0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="FontSize" Value="14"></Setter>
+            <Setter Property="FontSize" Value="14" />
         </Style>
 
         <Style TargetType="TextBlock" x:Key="SelectedPathTextBlockStyle">
@@ -102,7 +102,33 @@
                        Text="{Binding AttachmentsDirectory}" />
         </Grid>
 
-        <ProgressBar Grid.Row="2" Margin="20" Height="10" />
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ProgressBar Grid.Row="0"
+                         Grid.Column="0"
+                         Value="{Binding ProgressValue}"
+                         Maximum="100"
+                         Margin="20,0"
+                         Height="15" />
+
+            <TextBlock Grid.Row="0" Grid.Column="1"
+                       Text="{Binding ProgressValue, StringFormat={}{0}%}"
+                       Margin="20,0,20,5"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                       Text="{Binding ProcessedFilesCount, StringFormat='Обработано файлов: {0}'}"
+                       Margin="20,0"
+                       HorizontalAlignment="Center" />
+        </Grid>
 
         <Button Grid.Row="3"
                 Grid.Column="0"

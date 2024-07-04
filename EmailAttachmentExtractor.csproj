@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>Icons/Blue-mail-send.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,6 +29,10 @@
         </Resource>
         <None Remove="Icons\Folder-download.png" />
         <Resource Include="Icons\Folder-download.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Resource>
+        <None Remove="Icons\Blue-mail-send.ico" />
+        <Resource Include="Icons\Blue-mail-send.ico">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
     </ItemGroup>

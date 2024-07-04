@@ -3,6 +3,7 @@ using System.Windows.Markup;
 using EmailAttachmentExtractor.Commands;
 using EmailAttachmentExtractor.Services;
 using EmailAttachmentExtractor.ViewModels.Base;
+using Ookii.Dialogs.Wpf;
 
 namespace EmailAttachmentExtractor.ViewModels;
 
@@ -33,6 +34,28 @@ public class MainViewModel : ViewModel
         ProcessedFilesCount = processedFiles;
     }
 
+    public void SelectEmailDirectory()
+    {
+        var folderDialog = new VistaFolderBrowserDialog
+        {
+            Description = "Выберите папку, содержащую файлы .eml",
+            UseDescriptionForTitle = true
+        };
+
+        EmailDirectory = folderDialog.ShowDialog() == true ? folderDialog.SelectedPath : null;
+    }
+
+    public void SelectAttachmentsDirectory()
+    {
+        var dialog = new VistaFolderBrowserDialog
+        {
+            Description = "Выберите папку для сохранения вложений",
+            UseDescriptionForTitle = true
+        };
+
+        AttachmentsDirectory = dialog.ShowDialog() == true ? dialog.SelectedPath : null;
+    }
+
     #region Commands
 
     public ICommand StartCommand { get; set; }
@@ -43,12 +66,16 @@ public class MainViewModel : ViewModel
 
     #region Properties
 
-    private string? _emailPath;
+    private string? _emailDirectory;
 
-    public string? EmailPath
+    public string? EmailDirectory
     {
-        get => _emailPath;
-        set => Set(ref _emailPath, value);
+        get => _emailDirectory;
+        private set
+        {
+            Set(ref _emailDirectory, value);
+            ExtractService.EmailDirectory = value;
+        }
     }
 
     private string? _attachmentsDirectory;
@@ -56,7 +83,11 @@ public class MainViewModel : ViewModel
     public string? AttachmentsDirectory
     {
         get => _attachmentsDirectory;
-        set => Set(ref _attachmentsDirectory, value);
+        private set
+        {
+            Set(ref _attachmentsDirectory, value);
+            ExtractService.AttachmentsDirectory = value;
+        }
     }
 
     private int _progressValue;
@@ -72,7 +103,7 @@ public class MainViewModel : ViewModel
     public int ProcessedFilesCount
     {
         get => _processedFilesCount;
-        set => Set(ref _processedFilesCount, value);
+        private set => Set(ref _processedFilesCount, value);
     }
 
     #endregion

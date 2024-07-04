@@ -13,7 +13,7 @@ public class StartCommand(MainViewModel vm) : Command
 
     public override async void Execute(object? parameter)
     {
-        if (!string.IsNullOrEmpty(vm.EmailPath) && !string.IsNullOrEmpty(vm.AttachmentsDirectory))
+        if (!string.IsNullOrEmpty(vm.EmailDirectory) && !string.IsNullOrEmpty(vm.AttachmentsDirectory))
         {
             await vm.ExtractService.ExtractAttachmentsAsync();
             MessageBox.Show("Вложения успешно извлечены.");

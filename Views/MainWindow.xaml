@@ -13,9 +13,10 @@
             <Setter Property="Margin" Value="20,0" />
             <Setter Property="HorizontalAlignment" Value="Right" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Width" Value="40" />
-            <Setter Property="Height" Value="40" />
+            <Setter Property="Width" Value="45" />
+            <Setter Property="Height" Value="45" />
             <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
         </Style>
 
         <Style TargetType="TextBlock" x:Key="LabelTextBlockStyle">
@@ -34,8 +35,8 @@
         <Style TargetType="Image" x:Key="BrowseButtonImage">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Height" Value="30" />
-            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Width" Value="40" />
         </Style>
     </Window.Resources>
     <Grid>
@@ -64,7 +65,7 @@
                     Grid.Column="1"
                     Command="{Binding SelectEmailFolderCommand}"
                     Style="{StaticResource BrowseButtonStyle}">
-                <Image Source="/EmailAttachmentExtractor;component/Icons/Folder-Flat.png"
+                <Image Source="/EmailAttachmentExtractor;component/Icons/Folder-documents.png"
                        Style="{StaticResource BrowseButtonImage}" />
             </Button>
             <TextBlock Grid.Row="1"
@@ -92,7 +93,7 @@
                     Grid.Column="1"
                     Command="{Binding SelectAttachmentsFolderCommand}"
                     Style="{StaticResource BrowseButtonStyle}">
-                <Image Source="/EmailAttachmentExtractor;component/Icons/Folder-Flat.png"
+                <Image Source="/EmailAttachmentExtractor;component/Icons/Folder-download.png"
                        Style="{StaticResource BrowseButtonImage}" />
             </Button>
             <TextBlock Grid.Row="1"
@@ -137,6 +138,7 @@
                 Width="100"
                 FontSize="20"
                 Content="Старт"
+                Cursor="Hand"
                 Command="{Binding StartCommand}" />
     </Grid>
 </Window>

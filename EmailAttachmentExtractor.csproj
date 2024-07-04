@@ -22,8 +22,13 @@
 
     <ItemGroup>
         <None Remove="Icons\Folder-Flat.png"/>
-        <Resource Include="Icons\Folder-Flat.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <None Remove="Icons\Folder-documents.png" />
+        <Resource Include="Icons\Folder-documents.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Resource>
+        <None Remove="Icons\Folder-download.png" />
+        <Resource Include="Icons\Folder-download.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
     </ItemGroup>
 

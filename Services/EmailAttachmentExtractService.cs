@@ -4,13 +4,40 @@ using MimeKit;
 
 namespace EmailAttachmentExtractor.Services;
 
+/// <summary>
+///     Сервис для извлечения вложений из электронной почты.
+/// </summary>
 public class EmailAttachmentExtractService
 {
+    /// <summary>
+    ///     Директория с email-файлами.
+    /// </summary>
     public string? EmailDirectory { get; set; }
+
+    /// <summary>
+    ///     Директория для сохранения вложений.
+    /// </summary>
     public string? AttachmentsDirectory { get; set; }
 
+    /// <summary>
+    ///     Событие, вызываемое при изменении прогресса обработки email-файлов.
+    /// </summary>
     public event Action<int, int>? ProgressChanged;
 
+    /// <summary>
+    ///     Асинхронно извлекает вложения из электронных писем в указанной директории.
+    /// </summary>
+    /// <remarks>
+    ///     Метод выполняет следующие действия:
+    ///     <list type="number">
+    ///         <item>Проверяет существование директории с электронными письмами.</item>
+    ///         <item>Получает список файлов электронных писем.</item>
+    ///         <item>Обрабатывает каждый файл, извлекая вложения.</item>
+    ///         <item>Отслеживает прогресс обработки и вызывает событие ProgressChanged.</item>
+    ///     </list>
+    /// </remarks>
+    /// <seealso cref="GetEmailFiles" />
+    /// <seealso cref="ProcessEmailFileAsync" />
     public async Task ExtractAttachmentsAsync()
     {
         if (Directory.Exists(EmailDirectory))
@@ -29,6 +56,21 @@ public class EmailAttachmentExtractService
         }
     }
 
+    /// <summary>
+    ///     Рекурсивно получает список файлов электронных писем из указанной директории и ее поддиректорий.
+    /// </summary>
+    /// <param name="directory">Путь к директории для поиска файлов электронных писем.</param>
+    /// <returns>Список путей к файлам электронных писем с расширением .eml.</returns>
+    /// <remarks>
+    ///     Метод выполняет следующие действия:
+    ///     <list type="number">
+    ///         <item>Создает список для хранения путей к файлам.</item>
+    ///         <item>Добавляет все файлы с расширением .eml из указанной директории.</item>
+    ///         <item>Рекурсивно обрабатывает все поддиректории.</item>
+    ///         <item>Обрабатывает возможные исключения и отображает сообщение об ошибке.</item>
+    ///     </list>
+    ///     В случае возникновения любых исключений, метод отображает сообщение об ошибке.
+    /// </remarks>
     private static List<string> GetEmailFiles(string? directory)
     {
         var emailFiles = new List<string>();
@@ -51,6 +93,27 @@ public class EmailAttachmentExtractService
         return emailFiles;
     }
 
+    /// <summary>
+    ///     Асинхронно обрабатывает файл электронного письма, извлекая его содержимое и вложения.
+    /// </summary>
+    /// <param name="emailFileDirectory">Путь к файлу электронного письма.</param>
+    /// <param name="attachmentDirectory">Директория для сохранения извлеченных данных и вложений.</param>
+    /// <returns>Task, представляющий асинхронную операцию.</returns>
+    /// <remarks>
+    ///     Метод выполняет следующие действия:
+    ///     <list type="number">
+    ///         <item>Загружает сообщение из файла.</item>
+    ///         <item>Создает уникальную поддиректорию для данного сообщения.</item>
+    ///         <item>Сохраняет тело письма.</item>
+    ///         <item>Сохраняет вложения, если они есть.</item>
+    ///         <item>Извлекает и сохраняет встроенные изображения.</item>
+    ///     </list>
+    ///     В случае возникновения любых исключений, метод отображает сообщение об ошибке.
+    /// </remarks>
+    /// <seealso cref="LoadEmailMessageAsync" />
+    /// <seealso cref="SaveEmailBodyAsync" />
+    /// <seealso cref="SaveAttachmentsAsync" />
+    /// <seealso cref="SaveEmbeddedImages" />
     private static async Task ProcessEmailFileAsync(string emailFileDirectory, string? attachmentDirectory)
     {
         try
@@ -77,22 +140,53 @@ public class EmailAttachmentExtractService
         }
     }
 
+    /// <summary>
+    ///     Асинхронно загружает сообщение электронной почты из файла.
+    /// </summary>
+    /// <param name="emailFileDirectory">Путь к файлу электронного письма.</param>
+    /// <returns>Task, представляющий загруженное сообщение типа MimeMessage.</returns>
     private static async Task<MimeMessage> LoadEmailMessageAsync(string emailFileDirectory)
     {
         return await Task.Run(() => MimeMessage.Load(emailFileDirectory));
     }
 
+    /// <summary>
+    ///     Очищает строку от недопустимых символов для использования в имени файла.
+    /// </summary>
+    /// <param name="fileName">Исходная строка, представляющая имя файла.</param>
+    /// <returns>Очищенная строка, безопасная для использования в качестве имени файла.</returns>
+    /// <remarks>
+    ///     Метод заменяет все недопустимые символы в имени файла на символ подчеркивания "_".
+    /// </remarks>
     private static string SanitizeFileName(string fileName)
     {
         return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
     }
 
+    /// <summary>
+    ///     Асинхронно сохраняет тело электронного письма в HTML-файл.
+    /// </summary>
+    /// <param name="message">Объект MimeMessage, представляющий электронное письмо.</param>
+    /// <param name="messageDirectory">Директория для сохранения файла.</param>
+    /// <returns>Task, представляющий асинхронную операцию сохранения.</returns>
+    /// <remarks>
+    ///     Если HTML-тело отсутствует, сохраняется текстовое тело письма.
+    /// </remarks>
     private static async Task SaveEmailBodyAsync(MimeMessage message, string messageDirectory)
     {
         var htmlFilePath = Path.Combine(messageDirectory, "email.html");
         await File.WriteAllTextAsync(htmlFilePath, message.HtmlBody ?? message.TextBody);
     }
 
+    /// <summary>
+    ///     Асинхронно сохраняет вложения электронного письма.
+    /// </summary>
+    /// <param name="message">Объект MimeMessage, представляющий электронное письмо.</param>
+    /// <param name="messageDirectory">Директория для сохранения вложений.</param>
+    /// <returns>Task, представляющий асинхронную операцию сохранения вложений.</returns>
+    /// <remarks>
+    ///     Если имя вложения отсутствует, генерируется уникальное имя файла.
+    /// </remarks>
     private static async Task SaveAttachmentsAsync(MimeMessage message, string messageDirectory)
     {
         foreach (var attachment in message.Attachments.OfType<MimePart>())
@@ -108,6 +202,25 @@ public class EmailAttachmentExtractService
         }
     }
 
+    /// <summary>
+    ///     Рекурсивно сохраняет встроенные изображения из электронного письма.
+    /// </summary>
+    /// <param name="entity">Объект MimeEntity, представляющий часть электронного письма.</param>
+    /// <param name="messageDirectory">Директория для сохранения изображений.</param>
+    /// <remarks>
+    ///     Метод выполняет следующие действия:
+    ///     <list type="number">
+    ///         <item>Рекурсивно обходит все части сообщения.</item>
+    ///         <item>Идентифицирует встроенные изображения и вложения.</item>
+    ///         <item>Сохраняет найденные изображения в указанную директорию.</item>
+    ///         <item>Генерирует уникальные имена файлов для изображений без имени.</item>
+    ///     </list>
+    ///     Метод обрабатывает следующие типы содержимого:
+    ///     <list type="bullet">
+    ///         <item>Multipart: рекурсивно обрабатывает каждую часть.</item>
+    ///         <item>MimePart: сохраняет, если это встроенное изображение или вложение.</item>
+    ///     </list>
+    /// </remarks>
     private static void SaveEmbeddedImages(MimeEntity entity, string messageDirectory)
     {
         switch (entity)

@@ -6,6 +6,11 @@ namespace EmailAttachmentExtractor.Services;
 
 public class EmailAttachmentExtractService
 {
+    public string? EmailPath { get; private set; }
+    public string? AttachmentsDirectory { get; private set; }
+
+    public event Action<int, int>? ProgressChanged;
+
     public string? SelectEmailPath()
     {
         var folderDialog = new VistaFolderBrowserDialog
@@ -14,7 +19,8 @@ public class EmailAttachmentExtractService
             UseDescriptionForTitle = true
         };
 
-        return folderDialog.ShowDialog() == true ? folderDialog.SelectedPath : null;
+        EmailPath = folderDialog.ShowDialog() == true ? folderDialog.SelectedPath : null;
+        return EmailPath;
     }
 
     public string? SelectAttachmentsFolder()
@@ -25,61 +31,124 @@ public class EmailAttachmentExtractService
             UseDescriptionForTitle = true
         };
 
-        return dialog.ShowDialog() == true ? dialog.SelectedPath : null;
+        AttachmentsDirectory = dialog.ShowDialog() == true ? dialog.SelectedPath : null;
+        return AttachmentsDirectory;
     }
 
-    public void ExtractAttachments(string? emailPath, string? attachmentsDirectory)
+    public async Task ExtractAttachmentsAsync()
     {
-        if (File.Exists(emailPath))
-        {
-            ProcessEmailFile(emailPath, attachmentsDirectory);
-        }
-        else if (Directory.Exists(emailPath))
-        {
-            var emlFiles = GetEmailFiles(emailPath);
+        if (EmailPath == null || AttachmentsDirectory == null)
+            return;
 
-            foreach (var emlFile in emlFiles) ProcessEmailFile(emlFile, attachmentsDirectory);
+        if (Directory.Exists(EmailPath))
+        {
+            var emailFiles = GetEmailFiles(EmailPath).ToList();
+            var fileCount = emailFiles.Count;
+            var processedFiles = 0;
+
+            foreach (var emailFile in emailFiles)
+            {
+                await ProcessEmailFileAsync(emailFile, AttachmentsDirectory);
+                processedFiles++;
+                var progress = processedFiles * 100 / fileCount;
+                ProgressChanged?.Invoke(processedFiles, progress);
+            }
         }
     }
 
-    private IEnumerable<string?> GetEmailFiles(string? directory)
+    private IEnumerable<string> GetEmailFiles(string directory)
     {
-        var emlFiles = new List<string?>();
+        var emailFiles = new List<string>();
 
         try
         {
-            if (directory != null)
-            {
-                emlFiles.AddRange(Directory.GetFiles(directory, "*.eml"));
+            emailFiles.AddRange(Directory.GetFiles(directory, "*.eml"));
 
-                foreach (var subDirectory in Directory.GetDirectories(directory))
-                    emlFiles.AddRange(GetEmailFiles(subDirectory));
-            }
+            foreach (var subDirectory in Directory.GetDirectories(directory))
+                emailFiles.AddRange(GetEmailFiles(subDirectory));
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Ошибка при обработке директории {directory}: {ex.Message}");
         }
 
-        return emlFiles;
+        return emailFiles;
     }
 
-    private void ProcessEmailFile(string? emlFilePath, string? outputDirectory)
+    private async Task ProcessEmailFileAsync(string emailFilePath, string? attachmentDirectory)
     {
         try
         {
-            var message = MimeMessage.Load(emlFilePath);
-            var subject = string.Join("_", message.Subject.Split(Path.GetInvalidFileNameChars()));
+            var message = await LoadEmailMessageAsync(emailFilePath);
+            var subject = SanitizeFileName(message.Subject);
+            var uniqueFolderName = $"{subject}_{Guid.NewGuid()}";
 
-            if (outputDirectory == null) return;
+            if (attachmentDirectory == null) return;
 
-            var messageDirectory = Path.Combine(outputDirectory, subject);
+            var messageDirectory = Path.Combine(attachmentDirectory, uniqueFolderName);
             Directory.CreateDirectory(messageDirectory);
 
-            foreach (var attachment in message.Attachments)
-                if (attachment is MimePart part)
+            await SaveEmailBodyAsync(message, messageDirectory);
+
+            if (message.Attachments.Any()) await SaveAttachmentsAsync(message, messageDirectory);
+
+            SaveEmbeddedImages(message.Body, messageDirectory);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при обработке файла {emailFilePath}: {ex.Message}");
+        }
+    }
+
+    private async Task<MimeMessage> LoadEmailMessageAsync(string emailFilePath)
+    {
+        return await Task.Run(() => MimeMessage.Load(emailFilePath));
+    }
+
+    private string SanitizeFileName(string fileName)
+    {
+        return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+    }
+
+    private async Task SaveEmailBodyAsync(MimeMessage message, string messageDirectory)
+    {
+        var htmlFilePath = Path.Combine(messageDirectory, "email.html");
+        await File.WriteAllTextAsync(htmlFilePath, message.HtmlBody ?? message.TextBody);
+    }
+
+    private async Task SaveAttachmentsAsync(MimeMessage message, string messageDirectory)
+    {
+        foreach (var attachment in message.Attachments.OfType<MimePart>())
+        {
+            var fileName = attachment.FileName;
+
+            if (string.IsNullOrWhiteSpace(fileName)) fileName = Guid.NewGuid().ToString();
+
+            var filePath = Path.Combine(messageDirectory, fileName);
+
+            await using (var stream = File.Create(filePath))
+            {
+                await attachment.Content.DecodeToAsync(stream);
+            }
+
+            Console.WriteLine($"Сохранено вложение: {fileName} в папку {messageDirectory}");
+        }
+    }
+
+    private void SaveEmbeddedImages(MimeEntity entity, string messageDirectory)
+    {
+        switch (entity)
+        {
+            case Multipart multipart:
+                foreach (var part in multipart) SaveEmbeddedImages(part, messageDirectory);
+                break;
+            case MimePart part:
+                if (part.ContentDisposition?.Disposition == ContentDisposition.Inline || part.IsAttachment)
                 {
                     var fileName = part.FileName;
+
+                    if (string.IsNullOrWhiteSpace(fileName)) fileName = Guid.NewGuid().ToString();
+
                     var filePath = Path.Combine(messageDirectory, fileName);
 
                     using (var stream = File.Create(filePath))
@@ -87,12 +156,10 @@ public class EmailAttachmentExtractService
                         part.Content.DecodeTo(stream);
                     }
 
-                    Console.WriteLine($"Сохранено вложение: {fileName} в папку {messageDirectory}");
+                    Console.WriteLine($"Сохранено изображение: {fileName} в папку {messageDirectory}");
                 }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка при обработке файла {emlFilePath}: {ex.Message}");
+
+                break;
         }
     }
 }

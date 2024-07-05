@@ -23,23 +23,24 @@
 
     <ItemGroup>
         <None Remove="Icons\Folder-Flat.png"/>
-        <None Remove="Icons\Folder-documents.png" />
+        <None Remove="Icons\Folder-documents.png"/>
         <Resource Include="Icons\Folder-documents.png">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
-        <None Remove="Icons\Folder-download.png" />
+        <None Remove="Icons\Folder-download.png"/>
         <Resource Include="Icons\Folder-download.png">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
-        <None Remove="Icons\Blue-mail-send.ico" />
+        <None Remove="Icons\Blue-mail-send.ico"/>
         <Resource Include="Icons\Blue-mail-send.ico">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="MimeKit" Version="4.7.0"/>
         <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1"/>
+        <PackageReference Include="SimpleHelpers.FileEncoding" Version="1.4.0" />
     </ItemGroup>
 
 </Project>

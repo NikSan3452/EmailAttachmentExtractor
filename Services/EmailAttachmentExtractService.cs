@@ -1,5 +1,8 @@
 ﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Windows;
+using EmailAttachmentExtractor.Helpers;
 using MimeKit;
 
 namespace EmailAttachmentExtractor.Services;
@@ -7,7 +10,7 @@ namespace EmailAttachmentExtractor.Services;
 /// <summary>
 ///     Сервис для извлечения вложений из электронной почты.
 /// </summary>
-public class EmailAttachmentExtractService
+public class EmailAttachmentExtractService(ITextEncoder encoder)
 {
     /// <summary>
     ///     Директория с email-файлами.
@@ -114,7 +117,7 @@ public class EmailAttachmentExtractService
     /// <seealso cref="SaveEmailBodyAsync" />
     /// <seealso cref="SaveAttachmentsAsync" />
     /// <seealso cref="SaveEmbeddedImages" />
-    private static async Task ProcessEmailFileAsync(string emailFileDirectory, string? attachmentDirectory)
+    private async Task ProcessEmailFileAsync(string emailFileDirectory, string? attachmentDirectory)
     {
         try
         {
@@ -158,9 +161,19 @@ public class EmailAttachmentExtractService
     /// <remarks>
     ///     Метод заменяет все недопустимые символы в имени файла на символ подчеркивания "_".
     /// </remarks>
-    private static string SanitizeFileName(string fileName)
+    private string SanitizeFileName(string fileName)
     {
-        return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+        try
+        {
+            var sanitizedFileName = encoder.Decode(fileName);
+
+            sanitizedFileName = string.Join("_", sanitizedFileName.Split(Path.GetInvalidFileNameChars()));
+            return sanitizedFileName;
+        }
+        catch
+        {
+            return Guid.NewGuid().ToString();
+        }
     }
 
     /// <summary>
@@ -172,10 +185,17 @@ public class EmailAttachmentExtractService
     /// <remarks>
     ///     Если HTML-тело отсутствует, сохраняется текстовое тело письма.
     /// </remarks>
-    private static async Task SaveEmailBodyAsync(MimeMessage message, string messageDirectory)
+    private async Task SaveEmailBodyAsync(MimeMessage message, string messageDirectory)
     {
-        var htmlFilePath = Path.Combine(messageDirectory, "email.html");
-        await File.WriteAllTextAsync(htmlFilePath, message.HtmlBody ?? message.TextBody);
+        var bodyText = message.HtmlBody ?? message.TextBody;
+
+        if (bodyText != null)
+        {
+            var decodedBodyText = encoder.Decode(bodyText);
+
+            var htmlFilePath = Path.Combine(messageDirectory, "email.html");
+            await File.WriteAllTextAsync(htmlFilePath, decodedBodyText, Encoding.UTF8);
+        }
     }
 
     /// <summary>
@@ -193,7 +213,7 @@ public class EmailAttachmentExtractService
         {
             var fileName = attachment.FileName;
 
-            if (string.IsNullOrWhiteSpace(fileName)) fileName = Guid.NewGuid().ToString();
+            if (string.IsNullOrWhiteSpace(fileName)) fileName = "Без темы" + Guid.NewGuid();
 
             var filePath = Path.Combine(messageDirectory, fileName);
 

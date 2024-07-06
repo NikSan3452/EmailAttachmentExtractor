@@ -38,7 +38,7 @@ using Ude;
 
 namespace EmailAttachmentExtractor.Helpers;
 
-public class FileEncoding: ITextEncoder
+public class FileEncoding : ITextEncoder
 {
     private const int DEFAULT_BUFFER_SIZE = 128 * 1024;
 
@@ -68,11 +68,36 @@ public class FileEncoding: ITextEncoder
     ///     If the file or data has any mark indicating encoding information (byte order mark).
     /// </summary>
     public bool HasByteOrderMark { get; set; }
-    
+
+    /// <summary>
+    ///     Decodes a given string from Windows-1251 encoding to a UTF-8 string. If the decoding fails, it attempts to detect
+    ///     the encoding and decode accordingly.
+    /// </summary>
+    /// <param name="text">The input string to be decoded.</param>
+    /// <returns>The decoded string.</returns>
+    /// <remarks>
+    ///     This method first tries to decode the input string assuming it is encoded in Windows-1251. If an exception occurs
+    ///     during this process, it falls back to detecting the encoding using the `DetectFileEncoding` method and then decodes
+    ///     the string with the detected encoding.
+    /// </remarks>
     public string Decode(string text)
     {
-        var bytes = Encoding.Default.GetBytes(text);
-        var detectedEncoding = FileEncoding.DetectFileEncoding(new MemoryStream(bytes));
+        byte[] bytes;
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        try
+        {
+            bytes = Encoding.GetEncoding(1251).GetBytes(text);
+            var decodedText = Encoding.GetEncoding(1251).GetString(bytes);
+
+            return decodedText;
+        }
+        catch
+        {
+            // ignored
+        }
+
+        bytes = Encoding.Default.GetBytes(text);
+        var detectedEncoding = DetectFileEncoding(new MemoryStream(bytes));
         return detectedEncoding.GetString(bytes);
     }
 

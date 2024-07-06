@@ -40,7 +40,8 @@
     <ItemGroup>
         <PackageReference Include="MimeKit" Version="4.7.0"/>
         <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1"/>
-        <PackageReference Include="SimpleHelpers.FileEncoding" Version="1.4.0" />
+        <PackageReference Include="SimpleHelpers.FileEncoding" Version="1.4.0"/>
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0"/>
     </ItemGroup>
 
 </Project>

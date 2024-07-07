@@ -158,14 +158,19 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
     /// <param name="fileName">Исходная строка, представляющая имя файла.</param>
     /// <returns>Очищенная строка, безопасная для использования в качестве имени файла.</returns>
     /// <remarks>
-    ///     Метод заменяет все недопустимые символы в имени файла на символ подчеркивания "_".
+    ///     Метод получает имя файла в правильной кодировке,
+    ///     заменяет все недопустимые символы в имени на символ подчеркивания "_",
+    ///     если имя пустое, то присваивается имя "Без темы".
     /// </remarks>
     private string SanitizeFileName(string fileName)
     {
         try
         {
             var sanitizedFileName = encoder.Encode(fileName);
-
+            if (string.IsNullOrEmpty(sanitizedFileName))
+            {
+                sanitizedFileName = "Без темы";
+            }
             sanitizedFileName = string.Join("_", sanitizedFileName.Split(Path.GetInvalidFileNameChars()));
             return sanitizedFileName;
         }

@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+﻿using System.Windows;
 using EmailAttachmentExtractor.Commands.Base;
 using EmailAttachmentExtractor.ViewModels;
 
@@ -27,7 +27,7 @@ public class StartCommand(MainViewModel vm) : Command
     {
         if (!string.IsNullOrEmpty(vm.EmailDirectory) && !string.IsNullOrEmpty(vm.AttachmentsDirectory))
         {
-            await vm.ExtractService.ExtractAttachmentsAsync();
+            await vm.StartExtractionAsync();
             MessageBox.Show("Вложения успешно извлечены.");
         }
         else

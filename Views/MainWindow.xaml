@@ -128,10 +128,19 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center" />
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                       Text="{Binding ProcessedFilesCount, StringFormat='Обработано файлов: {0}'}"
-                       Margin="20,0"
-                       HorizontalAlignment="Center" />
+            <StackPanel Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                <TextBlock
+                    Text="{Binding ProcessedFilesCount, StringFormat='Обработано файлов: {0}'}"
+                    Margin="20,0" />
+                <TextBlock
+                    Text="{Binding ExecutionTime, StringFormat='Затрачено времени: {0}'}"
+                    Margin="20,0" />
+            </StackPanel>
+
         </Grid>
 
         <Button Grid.Row="3"

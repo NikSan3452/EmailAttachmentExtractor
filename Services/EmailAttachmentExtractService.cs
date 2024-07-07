@@ -122,7 +122,7 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
         {
             var message = await LoadEmailMessageAsync(emailFileDirectory);
             var subject = SanitizeFileName(message.Subject);
-            var uniqueFolderName = $"{subject}_{Guid.NewGuid()}";
+            var uniqueFolderName = GetUniqueFolderName(subject, message.Date.UtcDateTime, attachmentDirectory);
 
             if (attachmentDirectory != null)
             {
@@ -140,6 +140,26 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
         {
             MessageBox.Show($"Ошибка при обработке файла {emailFileDirectory}: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    ///     Получает уникальное имя папки для сообщения электронной почты.
+    /// </summary>
+    /// <param name="subject">Тема письма.</param>
+    /// <param name="dateTime">Время получения или создания письма.</param>
+    /// <param name="attachmentDirectory">Директория для сохранения вложений.</param>
+    /// <returns>Уникальное имя папки.</returns>
+    private static string GetUniqueFolderName(string subject, DateTime dateTime, string? attachmentDirectory)
+    {
+        var dateTimeString = dateTime.ToString("dd-MM-yyyy HH-mm-ss");
+        var folderName = $"{subject}_{dateTimeString}";
+
+        if (attachmentDirectory == null) return folderName;
+
+        var messageDirectory = Path.Combine(attachmentDirectory, folderName);
+        if (Directory.Exists(messageDirectory)) folderName = $"{folderName}_{Guid.NewGuid()}";
+
+        return folderName;
     }
 
     /// <summary>
@@ -167,10 +187,7 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
         try
         {
             var sanitizedFileName = encoder.Encode(fileName);
-            if (string.IsNullOrEmpty(sanitizedFileName))
-            {
-                sanitizedFileName = "Без темы";
-            }
+            if (string.IsNullOrEmpty(sanitizedFileName)) sanitizedFileName = "Без темы";
             sanitizedFileName = string.Join("_", sanitizedFileName.Split(Path.GetInvalidFileNameChars()));
             return sanitizedFileName;
         }

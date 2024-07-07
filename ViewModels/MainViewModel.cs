@@ -41,6 +41,7 @@ public class MainViewModel : ViewModel
 
         ProgressValue = 0;
         ProcessedFilesCount = 0;
+        ExecutionTime = "00:00:00";
 
         #region Commands
 

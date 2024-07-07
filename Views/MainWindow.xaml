@@ -12,6 +12,7 @@
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <!-- Кнопки выбора директорий. Начало -->
         <Style TargetType="Button" x:Key="BrowseButtonStyle">
             <Setter Property="Margin" Value="20,0" />
             <Setter Property="HorizontalAlignment" Value="Right" />
@@ -21,27 +22,36 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
-
+        <!-- Кнопки выбора директорий. Конец -->
+        
+        <!-- Лейблы кнопок. Начало -->
         <Style TargetType="TextBlock" x:Key="LabelTextBlockStyle">
             <Setter Property="Margin" Value="20, 0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="FontSize" Value="14" />
         </Style>
+        <!-- Лейблы кнопок. Конец -->
 
+        <!-- Вывод выбранных директорий. Начало -->
         <Style TargetType="TextBlock" x:Key="SelectedPathTextBlockStyle">
             <Setter Property="Margin" Value="20, 0" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="FontSize" Value="10" />
         </Style>
-
+        <!-- Вывод выбранных директорий. Конец -->
+    
+        <!-- Иконки кнопок выбора директорий. Начало -->
         <Style TargetType="Image" x:Key="BrowseButtonImage">
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="Height" Value="40" />
             <Setter Property="Width" Value="40" />
         </Style>
+        <!-- Иконки кнопок выбора директорий. Конец -->
     </Window.Resources>
+    
+    <!-- Основное окно. Начало-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -49,7 +59,8 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-
+        
+        <!-- Область выбора директории с электронными письмами. Начало -->
         <Grid Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -59,7 +70,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
+            
             <TextBlock Grid.Row="0"
                        Grid.Column="0"
                        Style="{StaticResource LabelTextBlockStyle}"
@@ -77,7 +88,9 @@
                        Style="{StaticResource SelectedPathTextBlockStyle}"
                        Text="{Binding EmailDirectory}" />
         </Grid>
-
+        <!-- Область выбора директории с электронными письмами. Конец -->
+        
+        <!-- Область выбора директории, где будут храниться вложения. Начало -->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -105,7 +118,9 @@
                        Style="{StaticResource SelectedPathTextBlockStyle}"
                        Text="{Binding AttachmentsDirectory}" />
         </Grid>
-
+        <!-- Область выбора директории, где будут храниться вложения. Конец -->
+        
+        <!-- Прогресс извлечения. Начало -->
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -140,9 +155,10 @@
                     Text="{Binding ExecutionTime, StringFormat='Затрачено времени: {0}'}"
                     Margin="20,0" />
             </StackPanel>
-
         </Grid>
-
+        <!-- Прогресс извлечения. Конец -->
+        
+        <!-- Кнопка "Старт". Начало -->
         <Button Grid.Row="3"
                 Grid.Column="0"
                 HorizontalAlignment="Center"
@@ -152,5 +168,7 @@
                 Content="Старт"
                 Cursor="Hand"
                 Command="{Binding StartCommand}" />
+        <!-- Кнопка "Старт". Конец -->
     </Grid>
+    <!-- Основное окно. Конец -->
 </Window>

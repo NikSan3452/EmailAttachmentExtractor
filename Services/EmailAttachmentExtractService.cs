@@ -89,7 +89,8 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при обработке директории {directory}: {ex.Message}");
+            MessageBox.Show($"Ошибка при обработке директории {directory}: {ex.Message}", "Ошибка", MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
 
         return emailFiles;
@@ -138,7 +139,8 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка при обработке файла {emailFileDirectory}: {ex.Message}");
+            MessageBox.Show($"Ошибка при обработке файла {emailFileDirectory}: {ex.Message}", "Ошибка",
+                MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

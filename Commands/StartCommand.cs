@@ -28,12 +28,13 @@ public class StartCommand(MainViewModel vm) : Command
         if (!string.IsNullOrEmpty(vm.EmailDirectory) && !string.IsNullOrEmpty(vm.AttachmentsDirectory))
         {
             await vm.StartExtractionAsync();
-            MessageBox.Show("Вложения успешно извлечены.");
+            MessageBox.Show("Вложения успешно извлечены.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         else
         {
             MessageBox.Show("Пожалуйста, выберите путь к папке с файлами *.eml " +
-                            "и папку для сохранения вложений.");
+                            "и папку для сохранения вложений.", "Предупреждение", MessageBoxButton.OK,
+                MessageBoxImage.Warning);
         }
     }
 }

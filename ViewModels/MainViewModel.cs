@@ -1,8 +1,8 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using System.Windows.Markup;
 using EmailAttachmentExtractor.Commands;
 using EmailAttachmentExtractor.Helpers;
+using EmailAttachmentExtractor.Helpers.Interfaces;
 using EmailAttachmentExtractor.Services;
 using EmailAttachmentExtractor.ViewModels.Base;
 using Ookii.Dialogs.Wpf;
@@ -22,10 +22,10 @@ public class MainViewModel : ViewModel
 
     public MainViewModel()
     {
-        ITextEncoder textEncoder = new FileEncoding();
+        ITextEncoder textEncoder = new TextEncoder();
         ExtractService = new EmailAttachmentExtractService(textEncoder);
         ExtractService.ProgressChanged += OnProgressChanged;
-        
+
         ProgressValue = 0;
         ProcessedFilesCount = 0;
 

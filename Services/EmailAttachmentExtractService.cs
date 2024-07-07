@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using System.Windows;
-using EmailAttachmentExtractor.Helpers;
+using EmailAttachmentExtractor.Helpers.Interfaces;
 using MimeKit;
 
 namespace EmailAttachmentExtractor.Services;
@@ -164,7 +164,7 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
     {
         try
         {
-            var sanitizedFileName = encoder.Decode(fileName);
+            var sanitizedFileName = encoder.Encode(fileName);
 
             sanitizedFileName = string.Join("_", sanitizedFileName.Split(Path.GetInvalidFileNameChars()));
             return sanitizedFileName;
@@ -190,7 +190,7 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
 
         if (bodyText != null)
         {
-            var decodedBodyText = encoder.Decode(bodyText);
+            var decodedBodyText = encoder.Encode(bodyText);
 
             var htmlFilePath = Path.Combine(messageDirectory, "email.html");
             await File.WriteAllTextAsync(htmlFilePath, decodedBodyText, Encoding.UTF8);

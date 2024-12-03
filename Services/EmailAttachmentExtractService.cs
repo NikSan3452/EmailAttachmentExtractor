@@ -121,7 +121,7 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
     {
         try
         {
-            var message = await LoadEmailMessageAsync(emailFileDirectory);
+            var message = await MimeMessage.LoadAsync(emailFileDirectory);
             var subject = SanitizeFileName(message.Subject);
             var uniqueFolderName = GetUniqueFolderName(subject, message.Date.UtcDateTime, attachmentDirectory);
 
@@ -162,16 +162,6 @@ public class EmailAttachmentExtractService(ITextEncoder encoder)
         if (Directory.Exists(messageDirectory)) folderName = $"{folderName}_{Guid.NewGuid()}";
 
         return folderName;
-    }
-
-    /// <summary>
-    ///     Асинхронно загружает сообщение электронной почты из файла.
-    /// </summary>
-    /// <param name="emailFileDirectory">Путь к файлу электронного письма.</param>
-    /// <returns>Task, представляющий загруженное сообщение типа MimeMessage.</returns>
-    private static async Task<MimeMessage> LoadEmailMessageAsync(string emailFileDirectory)
-    {
-        return await Task.Run(() => MimeMessage.Load(emailFileDirectory));
     }
 
     /// <summary>
